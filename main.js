@@ -1,6 +1,5 @@
 const $arenas = document.querySelector(".arenas");
 const $randomButton = document.querySelector(".control");
-const $reloadWrap = document.querySelector(".reloadWrap");
 
 const player1 = {
   number: 1,
@@ -54,7 +53,7 @@ function afterGameEnd() {
   $arenas.append(createReloadButton());
 
   const $reloadWrap = document.querySelector(".reloadWrap");
-  
+
   $reloadWrap.addEventListener("click", () => window.location.reload());
 }
 
