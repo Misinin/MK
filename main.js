@@ -1,5 +1,5 @@
 const $arenas = document.querySelector(".arenas");
-const $randomButton = document.querySelector(".control");
+const $controlForm = document.querySelector(".control");
 
 const player1 = {
   number: 1,
@@ -29,10 +29,46 @@ const player2 = {
   },
 };
 
-$randomButton.addEventListener("click", (evt) => {
-  player1.changeHP(randomValueFromRange(1, 20));
+const HIT = {
+  head: 30,
+  body: 25,
+  foot: 20,
+};
+
+const ATTACK = ["head", "body", "foot"];
+
+$controlForm.addEventListener("submit", (evt) => {
+  evt.preventDefault();
+
+  const enemy = enemyAttack();
+  const attack = {};
+
+  for (let item of $controlForm) {
+    if (item.checked && item.name === "hit") {
+      attack.value = randomValueFromRange(1, HIT[item.value]);
+      attack.hit = item.value;
+    }
+
+    if (item.checked && item.name === "defence") {
+      attack.defence = item.value;
+    }
+
+    item.checked = false;
+  }
+
+  if (enemy.hit === attack.defence) {
+    player1.changeHP(0);
+    player1.renderHP();
+  }
+
+  if (attack.hit === enemy.defence) {
+    player2.changeHP(0);
+    player2.renderHP();
+  }
+
+  player1.changeHP(enemy.value);
   player1.renderHP();
-  player2.changeHP(randomValueFromRange(1, 20));
+  player2.changeHP(attack.value);
   player2.renderHP();
 
   if (player1.hp === 0 && player1.hp < player2.hp) {
@@ -48,6 +84,13 @@ $randomButton.addEventListener("click", (evt) => {
     afterGameEnd();
   }
 });
+
+function enemyAttack() {
+  const hit = ATTACK[randomValueFromRange(0, ATTACK.length - 1)];
+  const defence = ATTACK[randomValueFromRange(0, ATTACK.length - 1)];
+
+  return { value: HIT[hit], hit, defence };
+}
 
 function afterGameEnd() {
   $arenas.append(createReloadButton());
