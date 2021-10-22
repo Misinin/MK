@@ -56,7 +56,33 @@ $controlForm.addEventListener("submit", (evt) => {
     item.checked = false;
   }
 
-  
+  if (enemy.hit === attack.defence) {
+    player1.changeHP(0);
+    player1.renderHP();
+  }
+
+  if (attack.hit === enemy.defence) {
+    player2.changeHP(0);
+    player2.renderHP();
+  }
+
+  player1.changeHP(enemy.value);
+  player1.renderHP();
+  player2.changeHP(attack.value);
+  player2.renderHP();
+
+  if (player1.hp === 0 && player1.hp < player2.hp) {
+    $arenas.append(showFightResult(player2.name));
+  } else if (player2.hp === 0 && player2.hp < player1.hp) {
+    $arenas.append(showFightResult(player1.name));
+  } else if (player1.hp === 0 && player2.hp === 0) {
+    $arenas.append(showFightResult());
+  }
+
+  if (player1.hp === 0 || player2.hp === 0) {
+    evt.target.disabled = true;
+    afterGameEnd();
+  }
 });
 
 function enemyAttack() {
@@ -65,26 +91,6 @@ function enemyAttack() {
 
   return { value: HIT[hit], hit, defence };
 }
-
-// $randomButton.addEventListener("click", (evt) => {
-//   player1.changeHP(randomValueFromRange(1, 20));
-//   player1.renderHP();
-//   player2.changeHP(randomValueFromRange(1, 20));
-//   player2.renderHP();
-
-//   if (player1.hp === 0 && player1.hp < player2.hp) {
-//     $arenas.append(showFightResult(player2.name));
-//   } else if (player2.hp === 0 && player2.hp < player1.hp) {
-//     $arenas.append(showFightResult(player1.name));
-//   } else if (player1.hp === 0 && player2.hp === 0) {
-//     $arenas.append(showFightResult());
-//   }
-
-//   if (player1.hp === 0 || player2.hp === 0) {
-//     evt.target.disabled = true;
-//     afterGameEnd();
-//   }
-// });
 
 function afterGameEnd() {
   $arenas.append(createReloadButton());
