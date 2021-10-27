@@ -1,5 +1,3 @@
-import { changeHP, elHP, renderHP } from "./actions.js";
-
 export const logs = {
   start:
     "Часы показывали [time], когда [player1] и [player2] бросили вызов друг другу.",
@@ -41,33 +39,52 @@ export const logs = {
   draw: "Ничья - это тоже победа!",
 };
 
-export const player1 = {
+class Player {
+  constructor(props) {
+    this.number = props.number;
+    this.name = props.name;
+    this.hp = props.hp;
+    this.img = props.img;
+  }
+
+  changeHP = (value) => {
+    this.hp -= value;
+
+    if (this.hp <= 0) {
+      this.hp = 0;
+    }
+  };
+
+  elHP = () => {
+    const number = this.number;
+    const $hpPlayer = document.querySelector(`.player${number} .life`);
+    return $hpPlayer;
+  };
+
+  renderHP = () => {
+    this.elHP().style.width = `${this.hp}%`;
+  };
+
+  attack = () => {
+    console.log(`${this.name} Fight...`);
+  };
+}
+
+export const player1 = new Player({
   number: 1,
   name: "SCORPION",
   hp: 100,
   img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
   weapon: [],
-  changeHP,
-  elHP,
-  renderHP,
-  attack: function () {
-    console.log(`${this.name} Fight...`);
-  },
-};
+});
 
-export const player2 = {
+export const player2 = new Player({
   number: 2,
   name: "KITANA",
   hp: 100,
   img: "http://reactmarathon-api.herokuapp.com/assets/kitana.gif",
   weapon: [],
-  changeHP,
-  elHP,
-  renderHP,
-  attack: function () {
-    console.log(`${this.name} Fight...`);
-  },
-};
+});
 
 export const HIT = {
   head: 30,
