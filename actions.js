@@ -1,24 +1,6 @@
 import { ATTACK, HIT } from "./constants.js";
 import { randomValueFromRange } from "./utils.js";
 
-export function changeHP(value) {
-  this.hp -= value;
-
-  if (this.hp <= 0) {
-    this.hp = 0;
-  }
-}
-
-export function elHP() {
-  const number = this.number;
-  const $hpPlayer = document.querySelector(`.player${number} .life`);
-  return $hpPlayer;
-}
-
-export function renderHP() {
-  this.elHP().style.width = `${this.hp}%`;
-}
-
 export function playerAttack(controlForm) {
   const player = {};
 
