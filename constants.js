@@ -39,11 +39,13 @@ export const logs = {
   draw: "Ничья - это тоже победа!",
 };
 
-class Player {
+export class Player {
   constructor(props) {
     this.number = props.number;
-    this.name = props.name;
+    this.id = props.id;
     this.hp = props.hp;
+    this.name = props.name;
+    this.avatar = props.avatar;
     this.img = props.img;
   }
 
@@ -69,22 +71,6 @@ class Player {
     console.log(`${this.name} Fight...`);
   };
 }
-
-export const player1 = new Player({
-  number: 1,
-  name: "SCORPION",
-  hp: 100,
-  img: "http://reactmarathon-api.herokuapp.com/assets/scorpion.gif",
-  weapon: [],
-});
-
-export const player2 = new Player({
-  number: 2,
-  name: "KITANA",
-  hp: 100,
-  img: "http://reactmarathon-api.herokuapp.com/assets/kitana.gif",
-  weapon: [],
-});
 
 export const HIT = {
   head: 30,
