@@ -19,10 +19,3 @@ export function playerAttack(controlForm) {
 
   return player;
 }
-
-export function enemyAttack() {
-  const hit = ATTACK[randomValueFromRange(0, ATTACK.length - 1)];
-  const defence = ATTACK[randomValueFromRange(0, ATTACK.length - 1)];
-
-  return { value: HIT[hit], hit, defence };
-}

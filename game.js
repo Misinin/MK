@@ -1,6 +1,9 @@
-import { player1, player2 } from "./constants.js";
-import { createElement, generateLogs } from "./utils.js";
-import { playerAttack, enemyAttack } from "./actions.js";
+import { Player } from "./constants.js";
+import { createElement, generateLogs, randomValueFromRange } from "./utils.js";
+import { playerAttack } from "./actions.js";
+
+let player1;
+let player2;
 
 class Game {
   constructor() {
@@ -9,8 +12,19 @@ class Game {
       .querySelector(".control")
       .addEventListener("submit", this.onFightClick);
     this.$chat = document.querySelector(".chat");
-    this.window = window.onload = this.onGameLoad;
   }
+
+  getHeroes = async () => {
+    try {
+      const res = await fetch(
+        "https://reactmarathon-api.herokuapp.com/api/mk/players"
+      );
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   onGameLoad = () => {
     this.$chat.insertAdjacentHTML(
@@ -30,29 +44,45 @@ class Game {
     this.$chat.insertAdjacentHTML("afterbegin", logElement);
   };
 
-  onFightClick = (evt) => {
+  onFightClick = async (evt) => {
     evt.preventDefault();
 
-    const enemy = enemyAttack();
+    let kickData;
     const player = playerAttack(evt.target);
 
-    if (enemy.hit !== player.defence) {
-      player1.changeHP(enemy.value);
+    try {
+      const res = await fetch(
+        "http://reactmarathon-api.herokuapp.com/api/mk/player/fight",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            hit: player.hit,
+            defence: player.defence,
+          }),
+        }
+      );
+      kickData = await res.json();
+    } catch (error) {
+      console.log(error);
+    }
+
+    if (kickData.player2.hit !== kickData.player1.defence) {
+      player1.changeHP(kickData.player2.value);
       player1.renderHP();
       this.showKickLog({
         whoKick: player2,
         targetKick: player1,
-        kickValue: player.value,
+        kickValue: kickData.player2.value,
       });
     }
 
-    if (player.hit !== enemy.defence) {
-      player2.changeHP(player.value);
+    if (kickData.player1.hit !== kickData.player2.defence) {
+      player2.changeHP(kickData.player1.value);
       player2.renderHP();
       this.showKickLog({
         whoKick: player1,
         targetKick: player2,
-        kickValue: enemy.value,
+        kickValue: kickData.player1.value,
       });
     }
 
@@ -136,9 +166,21 @@ class Game {
     );
   };
 
-  start = () => {
+  start = async () => {
+    const heroes = await this.getHeroes();
+
+    player1 = new Player({
+      ...heroes[randomValueFromRange(0, heroes.length - 1)],
+      number: 1,
+    });
+    player2 = new Player({
+      ...heroes[randomValueFromRange(0, heroes.length - 1)],
+      number: 2,
+    });
+
     this.$arenas.append(this.createPlayer(player1));
     this.$arenas.append(this.createPlayer(player2));
+    this.window = window.onload = this.onGameLoad;
   };
 }
 
